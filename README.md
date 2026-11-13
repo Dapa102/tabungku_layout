@@ -1,8 +1,8 @@
-# TabungKu — Tugas Minggu 3
+# TabungKu — Layout Ringkasan Tabungan
 
-Aplikasi Flutter sederhana untuk tugas **Menyusun Layout dengan Widget Dasar Flutter**.
-Halaman utama menampilkan **Ringkasan Tabungan** yang terdiri dari kartu saldo,
-tiga tombol kategori, dan daftar transaksi statis.
+Aplikasi Flutter sederhana untuk **Tugas Minggu 3: Menyusun Layout dengan Widget Dasar Flutter** pada mata kuliah TI505 Pemrograman Mobile.
+
+Halaman utama menampilkan layar **Ringkasan Tabungan** yang berisi kartu saldo, tiga tombol kategori, dan daftar transaksi. Seluruh layout dibangun memakai widget dasar Flutter **tanpa paket pihak ketiga** (termasuk tanpa GetX).
 
 ## Identitas
 
@@ -11,28 +11,72 @@ tiga tombol kategori, dan daftar transaksi statis.
 | Nama | Dafa Rafi Nur Wansyah |
 | NIM | 20240801157 |
 | Mata kuliah | TI505 Pemrograman Mobile (3 SKS) |
+| Pertemuan | 3 |
 | Tugas | Tugas Minggu 3: Menyusun Layout dengan Widget Dasar Flutter |
 
-## Tampilan
+## Tangkapan Layar
 
-| Ponsel (390 × 844) | Tablet (800 × 1280) |
+| Ponsel potret (390 × 844) | Tablet (800 × 1280) |
 |---|---|
 | ![Screenshot ponsel](docs/screenshot-ponsel.png) | ![Screenshot tablet](docs/screenshot-tablet.png) |
 
+Kedua tangkapan layar berada di folder [`docs/`](docs/). Layout sudah diuji bebas *overflow* pada kedua ukuran tersebut.
+
 ## Fitur Layout
 
-- `Scaffold` + `AppBar` berjudul **"Ringkasan Tabungan"**.
-- `Card` berisi nama tabungan (**Dana Pendidikan**), saldo, target, dan progress
-  bar yang disusun dengan `Column`, `Row`, `Container`, serta `alignment`.
+- `Scaffold` dengan `AppBar` berjudul **"Ringkasan Tabungan"**.
+- `Card` berisi nama tabungan (**Dana Pendidikan**), saldo, target, dan progress bar.
+  Progress bar dibuat manual dengan `Container` dan properti `alignment`.
 - `Row` berisi tiga tombol kategori: **Menabung**, **Tarik**, dan **Riwayat**.
-- Daftar minimal tiga transaksi (judul, tanggal, nominal) dengan data statis.
-- Jarak dan posisi diatur memakai `Padding`, `SizedBox`, `Container`,
-  `mainAxisAlignment`, dan `crossAxisAlignment`.
-- Responsif: lebar konten dibatasi `720` pada tablet dan padding menyesuaikan
-  lebar layar melalui `LayoutBuilder`; isi halaman dapat di-scroll sehingga
-  tidak overflow pada ponsel potret maupun tablet.
-- Hanya menggunakan widget dasar Flutter. **Tanpa paket pihak ketiga** (termasuk
-  GetX).
+  Ketiganya memakai `Expanded` agar lebarnya terbagi rata.
+- Daftar **4 transaksi** statis, masing-masing menampilkan judul, tanggal, dan nominal
+  (biru untuk pemasukan, merah untuk pengeluaran).
+- Jarak dan posisi diatur dengan `Padding`, `SizedBox`, `Container`,
+  `mainAxisAlignment`, `crossAxisAlignment`, dan `alignment`.
+- Responsif melalui `LayoutBuilder`:
+  - Ponsel (< 600 px): padding horizontal 16 px.
+  - Tablet (≥ 600 px): padding horizontal 32 px.
+  - Lebar konten dibatasi maksimal 720 px dan ditengahkan agar nyaman dibaca di tablet.
+  - `SingleChildScrollView` mencegah overflow bila tinggi konten melebihi layar.
+- Setiap bagian layout diberi komentar singkat di dalam kode.
+
+## Struktur Hierarki Widget
+
+```text
+TabungKuApp (MaterialApp)
+└── RingkasanPage (Scaffold)
+    ├── AppBar
+    │   └── Text("Ringkasan Tabungan")
+    └── SafeArea
+        └── LayoutBuilder
+            └── SingleChildScrollView
+                └── Center
+                    └── ConstrainedBox (maxWidth: 720)
+                        └── Padding
+                            └── Column
+                                ├── _KartuSaldo (Card > Container > Column)
+                                │   ├── Row (nama tabungan + ikon)
+                                │   ├── Text (saldo)
+                                │   ├── Row (target + persentase)
+                                │   └── progress bar (Container + alignment)
+                                ├── SizedBox
+                                ├── _BarisAksi (Row)
+                                │   ├── Expanded > _TombolAksi (Menabung)
+                                │   ├── Expanded > _TombolAksi (Tarik)
+                                │   └── Expanded > _TombolAksi (Riwayat)
+                                ├── SizedBox
+                                ├── _JudulBagian (Row)
+                                ├── SizedBox
+                                └── _DaftarTransaksi (Card > Column)
+                                    └── _ItemTransaksi (Row) × 4
+```
+
+## Widget yang Digunakan
+
+`Scaffold`, `AppBar`, `SafeArea`, `LayoutBuilder`, `SingleChildScrollView`,
+`Center`, `ConstrainedBox`, `Padding`, `Column`, `Row`, `Expanded`, `SizedBox`,
+`Card`, `Container`, `Text`, `Icon`, `InkWell`, `TextButton`, `Divider`, dan
+`SnackBar`. Semuanya berasal dari Flutter SDK.
 
 ## Cara Menjalankan
 
@@ -53,23 +97,41 @@ tiga tombol kategori, dan daftar transaksi statis.
    flutter devices
    flutter run -d <device-id>
    ```
-4. (Opsional) Jalankan pengujian layout.
-   ```bash
-   flutter analyze
-   flutter test
-   ```
+
+## Pengujian
+
+```bash
+flutter analyze
+flutter test
+```
+
+`test/widget_test.dart` memeriksa dua hal:
+
+1. Seluruh komponen utama halaman tampil (judul, saldo, target, tombol, transaksi).
+2. Tidak ada overflow pada layar ponsel **390 × 844** dan tablet **800 × 1280**.
+
+Status: `flutter test` lulus 3/3 dan `flutter build web --release` berhasil.
 
 ## Struktur Proyek
 
 ```text
 tabungku_layout/
 ├── lib/
-│   └── main.dart              # Seluruh kode halaman RingkasanPage
+│   └── main.dart                    # TabungKuApp + RingkasanPage
 ├── test/
-│   └── widget_test.dart       # Uji tampilan & bebas overflow
+│   └── widget_test.dart             # Uji komponen & bebas overflow
 ├── docs/
-│   ├── screenshot-ponsel.png  # Tangkapan layar 390 x 844
-│   ├── screenshot-tablet.png  # Tangkapan layar 800 x 1280
+│   ├── screenshot-ponsel.png        # 390 × 844
+│   ├── screenshot-tablet.png        # 800 × 1280
 │   └── tugas-minggu-3-tabungku-layout.md
-└── pubspec.yaml
+├── android/ ios/ web/ ...           # Platform bawaan Flutter
+├── pubspec.yaml
+└── README.md
 ```
+
+## Catatan
+
+- Data transaksi masih statis (*hard-coded*) sesuai ketentuan tugas.
+- Tidak ada dependensi paket pihak ketiga pada `pubspec.yaml`.
+- Tombol kategori hanya menampilkan `SnackBar` sebagai umpan balik; fitur formulir
+  dan pengelolaan data akan dikerjakan pada pertemuan berikutnya.
