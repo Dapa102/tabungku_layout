@@ -13,9 +13,9 @@ class TabungKuApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Skema warna hijau dipakai konsisten di seluruh halaman.
+    // Skema warna biru dipakai konsisten di seluruh halaman.
     final ColorScheme warna = ColorScheme.fromSeed(
-      seedColor: const Color(0xFF1B7F5C),
+      seedColor: const Color(0xFF1565C0),
     );
 
     return MaterialApp(
@@ -25,8 +25,8 @@ class TabungKuApp extends StatelessWidget {
         useMaterial3: true,
         colorScheme: warna,
         fontFamily: 'Roboto',
-        scaffoldBackgroundColor: const Color(0xFFF3F7F5),
-        // AppBar hijau dengan judul putih agar kontras dan mudah dibaca.
+        scaffoldBackgroundColor: const Color(0xFFF2F6FC),
+        // AppBar biru dengan judul putih agar kontras dan mudah dibaca.
         appBarTheme: AppBarTheme(
           backgroundColor: warna.primary,
           foregroundColor: warna.onPrimary,
@@ -193,7 +193,7 @@ class _KartuSaldo extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: <Color>[warna.primary, const Color(0xFF0E5138)],
+            colors: <Color>[warna.primary, const Color(0xFF0B3D75)],
           ),
         ),
         child: Column(
@@ -499,7 +499,7 @@ class _ItemTransaksi extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ColorScheme warna = Theme.of(context).colorScheme;
-    // Hijau untuk pemasukan, merah untuk pengeluaran.
+    // Biru untuk pemasukan, merah untuk pengeluaran.
     final Color warnaNominal = transaksi.masuk ? warna.primary : warna.error;
 
     return Padding(
