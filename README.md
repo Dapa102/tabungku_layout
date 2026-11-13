@@ -38,7 +38,7 @@ Kedua tangkapan layar berada di folder [`docs/`](docs/). Layout sudah diuji beba
   - Tablet (≥ 600 px): padding horizontal 32 px.
   - Lebar konten dibatasi maksimal 720 px dan ditengahkan agar nyaman dibaca di tablet.
   - `SingleChildScrollView` mencegah overflow bila tinggi konten melebihi layar.
-- Setiap bagian layout diberi komentar singkat di dalam kode.
+- Kode disusun rapi dan mudah dibaca tanpa komentar tambahan.
 
 ## Struktur Hierarki Widget
 

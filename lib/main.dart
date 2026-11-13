@@ -4,16 +4,11 @@ void main() {
   runApp(const TabungKuApp());
 }
 
-/// Aplikasi utama TabungKu.
-///
-/// Tugas Minggu 3: menyusun layout layar "Ringkasan Tabungan" hanya dengan
-/// widget dasar Flutter (tanpa paket pihak ketiga).
 class TabungKuApp extends StatelessWidget {
   const TabungKuApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Skema warna biru dipakai konsisten di seluruh halaman.
     final ColorScheme warna = ColorScheme.fromSeed(
       seedColor: const Color(0xFF1565C0),
     );
@@ -26,7 +21,6 @@ class TabungKuApp extends StatelessWidget {
         colorScheme: warna,
         fontFamily: 'Roboto',
         scaffoldBackgroundColor: const Color(0xFFF2F6FC),
-        // AppBar biru dengan judul putih agar kontras dan mudah dibaca.
         appBarTheme: AppBarTheme(
           backgroundColor: warna.primary,
           foregroundColor: warna.onPrimary,
@@ -45,9 +39,6 @@ class TabungKuApp extends StatelessWidget {
   }
 }
 
-/// Model data sederhana untuk satu transaksi.
-///
-/// Data masih statis (hard-coded) sesuai ketentuan tugas.
 class Transaksi {
   const Transaksi({
     required this.judul,
@@ -64,11 +55,9 @@ class Transaksi {
   final IconData icon;
 }
 
-/// Halaman utama yang menampilkan ringkasan tabungan.
 class RingkasanPage extends StatelessWidget {
   const RingkasanPage({super.key});
 
-  /// Daftar transaksi contoh (statis) untuk latihan layout.
   static const List<Transaksi> _daftarTransaksi = <Transaksi>[
     Transaksi(
       judul: 'Menabung rutin',
@@ -103,22 +92,14 @@ class RingkasanPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // 1. AppBar: judul halaman sesuai ketentuan tugas.
       appBar: AppBar(title: const Text('Ringkasan Tabungan')),
-      // 2. SafeArea menjaga konten tidak tertutup notch/status bar.
       body: SafeArea(
-        // 3. LayoutBuilder dipakai untuk menyesuaikan jarak pada ponsel
-        //    (lebar < 600) dan tablet (lebar >= 600).
         child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
             final bool layarTablet = constraints.maxWidth >= 600;
             final double paddingHorizontal = layarTablet ? 32.0 : 16.0;
 
-            // 4. SingleChildScrollView mencegah overflow saat konten lebih
-            //    tinggi dari layar (misalnya pada ponsel potret).
             return SingleChildScrollView(
-              // 5. Center + ConstrainedBox membatasi lebar konten di tablet
-              //    agar teks tidak melebar terlalu jauh.
               child: Center(
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 720),
@@ -128,22 +109,17 @@ class RingkasanPage extends StatelessWidget {
                       vertical: 20,
                     ),
                     child: Column(
-                      // Konten mengisi lebar yang tersedia.
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
-                        // 6. Kartu ringkasan saldo dan target tabungan.
                         const _KartuSaldo(),
                         const SizedBox(height: 16),
-                        // 7. Tiga tombol kategori: Menabung, Tarik, Riwayat.
                         const _BarisAksi(),
                         const SizedBox(height: 24),
-                        // 8. Judul bagian daftar transaksi.
                         _JudulBagian(
                           onLihatSemua: () =>
                               _tampilkanPesan(context, 'Lihat semua transaksi'),
                         ),
                         const SizedBox(height: 12),
-                        // 9. Daftar transaksi (minimal tiga item).
                         const _DaftarTransaksi(daftar: _daftarTransaksi),
                         const SizedBox(height: 24),
                       ],
@@ -158,7 +134,6 @@ class RingkasanPage extends StatelessWidget {
     );
   }
 
-  /// Umpan balik singkat ketika tombol kategori ditekan.
   void _tampilkanPesan(BuildContext context, String label) {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
@@ -171,7 +146,6 @@ class RingkasanPage extends StatelessWidget {
   }
 }
 
-/// Kartu berisi nama tabungan, saldo, dan target.
 class _KartuSaldo extends StatelessWidget {
   const _KartuSaldo();
 
@@ -179,7 +153,6 @@ class _KartuSaldo extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme warna = Theme.of(context).colorScheme;
 
-    // Card membungkus Container bergradien agar sudutnya tetap membulat.
     return Card(
       elevation: 3,
       margin: EdgeInsets.zero,
@@ -187,7 +160,6 @@ class _KartuSaldo extends StatelessWidget {
       shadowColor: warna.primary.withValues(alpha: 0.35),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Container(
-        // Padding memberi jarak isi kartu dari tepi.
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -199,7 +171,6 @@ class _KartuSaldo extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            // Row: nama tabungan di kiri, ikon di kanan.
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -226,7 +197,6 @@ class _KartuSaldo extends StatelessWidget {
                     ],
                   ),
                 ),
-                // Container bulat sebagai latar ikon tabungan.
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
@@ -242,7 +212,6 @@ class _KartuSaldo extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20),
-            // Label dan nominal saldo saat ini.
             Text(
               'Saldo saat ini',
               style: TextStyle(
@@ -261,11 +230,9 @@ class _KartuSaldo extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 18),
-            // Row: target di kiri, persentase di kanan.
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                // Expanded membuat teks target dapat menyusut/ellipsis.
                 Expanded(
                   child: Text(
                     'Target: Rp 5.000.000',
@@ -289,8 +256,6 @@ class _KartuSaldo extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            // Progress bar manual: Container luar + Container dalam.
-            // alignment: Alignment.centerLeft membuat isian mulai dari kiri.
             LayoutBuilder(
               builder: (BuildContext context, BoxConstraints batas) {
                 return Container(
@@ -317,13 +282,11 @@ class _KartuSaldo extends StatelessWidget {
   }
 }
 
-/// Baris tiga tombol kategori dengan lebar yang sama.
 class _BarisAksi extends StatelessWidget {
   const _BarisAksi();
 
   @override
   Widget build(BuildContext context) {
-    // Row + Expanded membagi lebar secara merata; SizedBox memberi jarak.
     return const Row(
       children: <Widget>[
         Expanded(
@@ -345,7 +308,6 @@ class _BarisAksi extends StatelessWidget {
   }
 }
 
-/// Satu tombol kategori berisi ikon dan label.
 class _TombolAksi extends StatelessWidget {
   const _TombolAksi({required this.icon, required this.label});
 
@@ -379,12 +341,10 @@ class _TombolAksi extends StatelessWidget {
             );
         },
         child: Padding(
-          // Padding vertikal/horizontal mengatur jarak ikon dan label.
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 14),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              // Ikon di dalam lingkaran berwarna lembut.
               Container(
                 width: 42,
                 height: 42,
@@ -396,7 +356,6 @@ class _TombolAksi extends StatelessWidget {
                 child: Icon(icon, color: warna.onPrimaryContainer, size: 22),
               ),
               const SizedBox(height: 8),
-              // maxLines + ellipsis menjaga label tetap satu baris.
               Text(
                 label,
                 maxLines: 1,
@@ -416,7 +375,6 @@ class _TombolAksi extends StatelessWidget {
   }
 }
 
-/// Judul bagian "Transaksi Terakhir" beserta tombol "Lihat semua".
 class _JudulBagian extends StatelessWidget {
   const _JudulBagian({required this.onLihatSemua});
 
@@ -425,10 +383,8 @@ class _JudulBagian extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      // spaceBetween menaruh judul di kiri dan tombol di kanan.
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        // Expanded + ellipsis mencegah overflow pada layar sempit.
         Expanded(
           child: Text(
             'Transaksi Terakhir',
@@ -452,7 +408,6 @@ class _JudulBagian extends StatelessWidget {
   }
 }
 
-/// Kartu berisi daftar transaksi yang dipisahkan garis tipis.
 class _DaftarTransaksi extends StatelessWidget {
   const _DaftarTransaksi({required this.daftar});
 
@@ -473,7 +428,6 @@ class _DaftarTransaksi extends StatelessWidget {
       ),
       child: Column(
         children: <Widget>[
-          // Perulangan membuat item dan pembatas antar-item.
           for (int i = 0; i < daftar.length; i++) ...<Widget>[
             if (i > 0)
               Divider(
@@ -490,7 +444,6 @@ class _DaftarTransaksi extends StatelessWidget {
   }
 }
 
-/// Satu baris transaksi: ikon, judul, tanggal, dan nominal.
 class _ItemTransaksi extends StatelessWidget {
   const _ItemTransaksi({required this.transaksi});
 
@@ -499,15 +452,12 @@ class _ItemTransaksi extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ColorScheme warna = Theme.of(context).colorScheme;
-    // Biru untuk pemasukan, merah untuk pengeluaran.
     final Color warnaNominal = transaksi.masuk ? warna.primary : warna.error;
 
     return Padding(
-      // Jarak dalam setiap baris transaksi.
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       child: Row(
         children: <Widget>[
-          // Ikon transaksi di dalam lingkaran berwarna lembut.
           Container(
             width: 44,
             height: 44,
@@ -519,7 +469,6 @@ class _ItemTransaksi extends StatelessWidget {
             child: Icon(transaksi.icon, color: warnaNominal, size: 22),
           ),
           const SizedBox(width: 12),
-          // Expanded agar judul dan tanggal mengisi sisa lebar.
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -543,7 +492,6 @@ class _ItemTransaksi extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          // Nominal rata kanan dengan warna sesuai jenis transaksi.
           Text(
             transaksi.nominal,
             style: TextStyle(
